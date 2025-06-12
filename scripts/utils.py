@@ -21,7 +21,7 @@ class Utils:
         1) You are given an input: {update}
         2) Remove User tag from the input
         3) With this input, you have to fix spelling and grammatical errors and generate a beautiful summary that should not exceed 200 words
-        4) Give me the answer in neat bullet points instead of paragraphs
+        4) Give me the answer in neat bullet points instead of paragraphs, each point have to append in new line
 
         After generating this summary only return this summary as output and nothing else
 
