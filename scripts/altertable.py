@@ -7,6 +7,7 @@ from scripts.timestripper import TimeStripper
 from atlassian import Confluence
 
 from dotenv import load_dotenv
+import markdown
 
 load_dotenv()
 
@@ -90,7 +91,9 @@ class AlterTable:
         new_row.append(td_user)
 
         td_response = self.soup.new_tag("td")
-        td_response.string = data["response"]
+        #td_response.string = data["response"]
+        response_html = markdown.markdown(data["response"])  # converts to HTML
+        td_response.append(BeautifulSoup(response_html, "html.parser"))
         new_row.append(td_response)
 
         td_time = self.soup.new_tag("td")

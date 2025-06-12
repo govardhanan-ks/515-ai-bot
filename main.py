@@ -24,9 +24,10 @@ class Main:
         def handle_mention(event,say,client):
             inp = event.get("text")
             user_id = event.get("user").lstrip('@')
-            print(user_id)
+            #print(user_id)
             user_info = client.users_info(user=user_id)
             username = user_info["user"]["profile"].get("display_name") or user_info["user"]["profile"].get("real_name")
+            print(f"Enginer {username} sending the 515 update")
 
             response = self.utils_app.generate_content(inp)
             print(f"Sending {response} as 515 to confluence")
