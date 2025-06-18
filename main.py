@@ -7,6 +7,7 @@ from scripts.utils import Utils
 from dotenv import load_dotenv
 
 from scripts.altertable import AlterTable
+from scripts.evaluator import Evaluator
 import sys
 
 load_dotenv()
@@ -33,6 +34,8 @@ class Main:
             #response = self.utils_app.generate_content(inp)
             if self.ai_enabled:
                 response = self.utils_app.generate_content(inp)
+                eval = Evaluator()
+                eval(inp, response)
                 print(f"Sending {response} as 515 to confluence (AI mode)")
             else:
                 
