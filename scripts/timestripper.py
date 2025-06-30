@@ -9,7 +9,8 @@ class TimeStripper:
         first_day = date.replace(day=1)
         dom = date.day
         adjusted_dom = dom + first_day.weekday()
-        return (adjusted_dom - 1) // 7 + 1
+        week_num =  (adjusted_dom - 1) // 7 + 1
+        return min(week_num, 5)
     
     def ordinal(self,n):
         return "%d%s" % (n, "tsnrhtdd"[(n//10%10!=1)*(n%10<4)*n%10::4])

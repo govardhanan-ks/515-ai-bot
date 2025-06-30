@@ -13,11 +13,11 @@ import sys
 load_dotenv()
 
 class Main:
-    def __init__(self, ai_enabled=True):
+    def __init__(self, gpt_enabled=True):
         self.app = App(token=os.environ.get("SLACK_TOKEN"))
         self.utils_app = Utils()
         self.alter_app = AlterTable()
-        self.ai_enabled = ai_enabled  # store the flag
+        self.gpt_enabled = gpt_enabled
         self.register_listeners()
 
     def register_listeners(self):
@@ -31,9 +31,8 @@ class Main:
             username = user_info["user"]["profile"].get("display_name") or user_info["user"]["profile"].get("real_name")
             print(f"Enginer {username} sending the 515 update")
 
-            #response = self.utils_app.generate_content(inp)
-            if self.ai_enabled:
-                response = self.utils_app.generate_content(inp)
+            if self.gpt_enabled:
+                response = self.utils_app.generate_gpt_content(inp)
                 eval = Evaluator()
                 eval(inp, response)
                 print(f"Sending {response} as 515 to confluence (AI mode)")
@@ -57,8 +56,12 @@ class Main:
 
 if __name__== "__main__":
     import sys
-    use_ai = "--no-ai" not in sys.argv
-    Main(ai_enabled=use_ai).start()
+    print(sys.argv)
+    if len(sys.argv) > 1 and sys.argv[1] == "gpt":
+        print("GPT enabled for generating summary")
+        Main(gpt_enabled=True).start()
+    else:
+        Main().start()
 
 
 

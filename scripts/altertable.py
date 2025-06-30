@@ -38,6 +38,14 @@ class AlterTable:
 
 
     def get_updated_table_details(self, data, time=datetime.now()):
+
+        if not self.soup.find("table"):
+            with shelve.open("my_shelf") as db:
+                db.clear()
+                self.current_table_uuid = str(uuid.uuid4())
+                self.current_table_creation_time = datetime.now()
+                db["current_table_uuid"] = self.current_table_uuid
+                db["current_table_creation_time"] = self.current_table_creation_time
         time_difference = time - self.current_table_creation_time
         table = self.soup.find("table")
 
@@ -100,8 +108,7 @@ class AlterTable:
         td_time.string = str(datetime.now())
         new_row.append(td_time)
 
-        # Re-locate the (possibly new) table
-        table = self.soup.find("table")
+        table = self.soup.find_all("table")[-1]
         if not table or not table.find("tbody"):
             raise ValueError("Table or its tbody not found after creation")
 
