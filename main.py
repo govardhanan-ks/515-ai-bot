@@ -56,7 +56,6 @@ class Main:
 
 if __name__== "__main__":
     import sys
-    print(sys.argv)
     if len(sys.argv) > 1 and sys.argv[1] == "gpt":
         print("GPT enabled for generating summary")
         Main(gpt_enabled=True).start()
