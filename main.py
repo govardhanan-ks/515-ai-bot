@@ -13,7 +13,7 @@ import sys
 load_dotenv()
 
 class Main:
-    def __init__(self, gpt_enabled=True):
+    def __init__(self, gpt_enabled=False):
         self.app = App(token=os.environ.get("SLACK_TOKEN"))
         self.utils_app = Utils()
         self.alter_app = AlterTable()
@@ -35,11 +35,13 @@ class Main:
                 response = self.utils_app.generate_gpt_content(inp)
                 eval = Evaluator()
                 eval(inp, response)
-                print(f"Sending {response} as 515 to confluence (AI mode)")
+                print(f"Sending {response} as 515 to confluence (GPT mode)")
             else:
                 
-                response = inp
-                print(f"Sending raw input to confluence (Manual mode)")
+                response = self.utils_app.generate_content(inp)
+                eval = Evaluator()
+                eval(inp, response)
+                print(f"Sending {response} to confluence (LM Studio mode)")
 
             data = {}
             data["username"] = username
