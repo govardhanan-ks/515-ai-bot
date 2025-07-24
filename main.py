@@ -3,6 +3,7 @@ from slack_bolt import App
 from slack_bolt.adapter.socket_mode import SocketModeHandler
 import os
 from scripts.utils import Utils
+import time
 
 from dotenv import load_dotenv
 
@@ -30,17 +31,20 @@ class Main:
             user_info = client.users_info(user=user_id)
             username = user_info["user"]["profile"].get("display_name") or user_info["user"]["profile"].get("real_name")
             print(f"Enginer {username} sending the 515 update")
+            start_time = time.perf_counter()
 
             if self.gpt_enabled:
                 response = self.utils_app.generate_gpt_content(inp)
                 eval = Evaluator()
                 eval(inp, response)
+                end_time = time.perf_counter()
                 print(f"Sending {response} as 515 to confluence (GPT mode)")
             else:
                 
                 response = self.utils_app.generate_content(inp)
                 eval = Evaluator()
                 eval(inp, response)
+                end_time = time.perf_counter()
                 print(f"Sending {response} to confluence (LM Studio mode)")
 
             data = {}
@@ -50,6 +54,9 @@ class Main:
             self.alter_app.get_updated_table_details(data)
 
             say(f"Sending {response} as 515 to confluence",thread_ts=event["ts"])
+
+            print(f"\n\n\n\n\n Response generated in {end_time - start_time} seconds")
+
 
     def start(self):
         handler = SocketModeHandler(self.app, os.environ["SLACK_APP_TOKEN"])

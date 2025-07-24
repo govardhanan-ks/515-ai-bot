@@ -1,15 +1,11 @@
 import os
 from openai import AzureOpenAI
 import json
-from deepeval.metrics import GEval
-from deepeval.metrics.g_eval import Rubric
 from dotenv import load_dotenv
 import pandas as pd
 
 
 load_dotenv("../.env")
-
-os.environ["DEEPEVAL_NO_PROGRESS_BAR"] = "1"
 
 class Evaluator:
     def __init__(self, url = os.environ["LLM_ENDPOINT"]):
@@ -36,7 +32,7 @@ class Evaluator:
                 {chr(10).join(f"- {step}" for step in steps)}
 
                 ## Rubric:
-                {chr(10).join(f"- {r.score_range}: {r.expected_outcome}" for r in rubric)}
+                {chr(10).join(f"- {r['score_range']}: {r['expected_outcome']}" for r in rubric)}
 
                 Evaluate the summary and Respond ONLY in **valid JSON**, no extra commentary, no markdown formatting. Format:
 
@@ -60,10 +56,10 @@ class Evaluator:
                 "Vague language or contradicting opinions are OK."
             ],
             rubric=[
-                Rubric(score_range=(0, 2), expected_outcome="Factually incorrect."),
-                Rubric(score_range=(3, 6), expected_outcome="Mostly correct."),
-                Rubric(score_range=(7, 9), expected_outcome="Correct but missing minor details."),
-                Rubric(score_range=(10, 10), expected_outcome="100% correct.")
+                {"score_range":(0, 2), "expected_outcome":"Factually incorrect."},
+                {"score_range":(3, 6), "expected_outcome":"Mostly correct."},
+                {"score_range":(7, 9), "expected_outcome":"Correct but missing minor details."},
+                {"score_range":(10, 10), "expected_outcome":"100% correct."}
             ]
         )
 
@@ -91,10 +87,10 @@ class Evaluator:
                 "Capturing the important details of the 'input' in the 'actual output' is accepted"
             ],
             rubric=[
-                Rubric(score_range=(0,2), expected_outcome="Almost the same size as the input itself"),
-                Rubric(score_range=(3,6), expected_outcome="Repeats most points"),
-                Rubric(score_range=(7,9), expected_outcome="Fine, but has some unnecessary detail"),
-                Rubric(score_range=(10,10), expected_outcome="Perfectly information dense and does not repeat any points"),
+                {"score_range":(0,2), "expected_outcome":"Almost the same size as the input itself"},
+                {"score_range":(3,6), "expected_outcome":"Repeats most points"},
+                {"score_range":(7,9), "expected_outcome":"Fine, but has some unnecessary detail"},
+                {"score_range":(10,10), "expected_outcome":"Perfectly information dense and does not repeat any points"},
             ],
         )
 
@@ -121,10 +117,10 @@ class Evaluator:
                 "You should also heavily penalize big paragraphs of data in 'actual output'",
             ],
             rubric=[
-                Rubric(score_range=(0,2), expected_outcome="Big Paragraphs and Spelling errors"),
-                Rubric(score_range=(3,6), expected_outcome="Contains a mixed bag of paragraphs and bullet points"),
-                Rubric(score_range=(7,9), expected_outcome="Decently Structured"),
-                Rubric(score_range=(10,10), expected_outcome="Perfectly structured"),
+                {"score_range":(0,2), "expected_outcome":"Big Paragraphs and Spelling errors"},
+                {"score_range":(3,6), "expected_outcome":"Contains a mixed bag of paragraphs and bullet points"},
+                {"score_range":(7,9), "expected_outcome":"Decently Structured"},
+                {"score_range":(10,10), "expected_outcome":"Perfectly structured"},
             ],
         )
 
@@ -151,9 +147,9 @@ class Evaluator:
                 "You should also heavily penalize adding unnecessary hallucinated information",
             ],
             rubric=[
-                Rubric(score_range=(0,3), expected_outcome="Has facts that are not part of input"),
-                Rubric(score_range=(4,7), expected_outcome="Has extended some of the points mentioned in the input that were not part of the original input"),
-                Rubric(score_range=(8,10), expected_outcome="Only has the facts that are part of source code"),
+                {"score_range":(0,3), "expected_outcome":"Has facts that are not part of input"},
+                {"score_range":(4,7), "expected_outcome":"Has extended some of the points mentioned in the input that were not part of the original input"},
+                {"score_range":(8,10), "expected_outcome":"Only has the facts that are part of source code"},
             ],
         )
 
