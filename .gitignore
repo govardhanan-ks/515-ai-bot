@@ -1,2 +1,8 @@
 .env
 .venv/*
+
+scripts/__pycache__
+my_shelf
+
+.deepeval
+evaluations.csv
