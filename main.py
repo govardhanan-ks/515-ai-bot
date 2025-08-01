@@ -10,6 +10,8 @@ from dotenv import load_dotenv
 from scripts.altertable import AlterTable
 from scripts.evaluator import Evaluator
 from scripts.auditor import Auditor
+
+from tasks import send_audit_log_to_db
 import sys
 
 load_dotenv()
@@ -41,7 +43,8 @@ class Main:
                 eval(inp, response)
                 end_time = time.perf_counter()
                 data = {"username": username, "action": "generate_515", "details": response}
-                self.auditor.audit(data)
+                result = send_audit_log_to_db.apply_async(args=[data])
+                print(f"Audit log sent to database with task ID: {result.id}")
                 print(f"Sending {response} as 515 to confluence (GPT mode)")
             else:
                 
@@ -63,7 +66,6 @@ class Main:
 
 
     def start(self):
-        print(os.environ["SLACK_APP_TOKEN"])
         handler = SocketModeHandler(self.app, os.environ["SLACK_APP_TOKEN"])
         handler.start()
 
