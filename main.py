@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 
 from scripts.altertable import AlterTable
 from scripts.evaluator import Evaluator
+from scripts.auditor import Auditor
 import sys
 
 load_dotenv()
@@ -18,6 +19,7 @@ class Main:
         self.app = App(token=os.environ.get("SLACK_TOKEN"))
         self.utils_app = Utils()
         self.alter_app = AlterTable()
+        self.auditor = Auditor()
         self.gpt_enabled = gpt_enabled
         self.register_listeners()
 
@@ -38,6 +40,8 @@ class Main:
                 eval = Evaluator()
                 eval(inp, response)
                 end_time = time.perf_counter()
+                data = {"username": username, "action": "generate_515", "details": response}
+                self.auditor.audit(data)
                 print(f"Sending {response} as 515 to confluence (GPT mode)")
             else:
                 
@@ -59,6 +63,7 @@ class Main:
 
 
     def start(self):
+        print(os.environ["SLACK_APP_TOKEN"])
         handler = SocketModeHandler(self.app, os.environ["SLACK_APP_TOKEN"])
         handler.start()
 
@@ -69,6 +74,7 @@ if __name__== "__main__":
         print("GPT enabled for generating summary")
         Main(gpt_enabled=True).start()
     else:
+        print(os.environ.get("SLACK_TOKEN"))
         Main().start()
 
 
